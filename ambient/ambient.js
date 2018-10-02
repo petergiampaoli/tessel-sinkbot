@@ -12,19 +12,34 @@ ambient.on('ready', function() {
   // Get points of light and sound data.
   setInterval(function() {
     ambient.getLightLevel(function(err, lightdata) {
+      if (lightdata < 0.03) {
+        console.log('minimal light detected');
+      } else {
+        console.log('IPHONE');
+      }
       if (err) throw err;
       ambient.getSoundLevel(function(err, sounddata) {
         if (err) throw err;
         console.log(
           'Light level:',
           lightdata.toFixed(8),
-          ' ',
-          'Sound Level:',
-          sounddata.toFixed(8)
+          ' '
+          //   'Sound Level:',
+          //   sounddata.toFixed(8)
         );
       });
     });
-  }, 500); // The readings will happen every .5 seconds
+  }, 1000); // The readings will happen every .5 seconds
+});
+
+ambient.on('ready', function() {
+  ambient.setLightTrigger(0.02);
+
+  if (ambient.getLightLevel() <= 0.05) {
+    console.log('Waiting for a bright light or a sound...');
+  } else {
+    console.log('Dirty sink detected!');
+  }
 });
 
 ambient.on('error', function(err) {
